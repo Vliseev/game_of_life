@@ -7,20 +7,9 @@ from keras import Input, Model, layers
 from sklearn.model_selection import train_test_split
 
 
-# input_shape = params['input_shape']
-#     filters = params['filters']
-#     kernel_size = params['kernel_size']
-#     strides = params['strides']
-#     hidden_dims = params['hidden_dims']
-#     test_size = params['test_size']
-#     seed = params['seed']
-#     num_epoch = params['num_epoch']
-#     batch_size = params['batch_size']
-#     model_path = params['model_path']
-
-
 def get_parser():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--shape", nargs='+', type=int)
     parser.add_argument('--filters', default=50,
                         help='number layers in first layer')
     parser.add_argument('--path-to-dataset', type=str, required=True)
@@ -96,6 +85,8 @@ def train(params: Dict[str, Any]):
     X, Y = read_data(params['path_to_dataset'])
 
     input_shape = X.shape[1:]
+    if input_shape != param['shape']:
+        raise ValueError("input shape isn't equal dataset shape")
 
     X_pad = pad_input(X, input_shape)
     Y = reshape_input(Y)
